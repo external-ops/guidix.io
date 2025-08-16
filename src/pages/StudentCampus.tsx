@@ -2034,7 +2034,7 @@ export default function StudentCampus() {
   };
 
   return (
-    <div className={`h-screen flex flex-col transition-all duration-300 ${
+    <div className={`h-screen flex transition-all duration-300 ${
       appearance.theme === 'light' 
         ? 'bg-gray-100' 
         : appearance.theme === 'auto'
@@ -2044,372 +2044,447 @@ export default function StudentCampus() {
       appearance.fontSize === 'small' ? 'text-sm' :
       appearance.fontSize === 'large' ? 'text-lg' : 'text-base'
     }`}>
-      {/* Top Navigation Bar */}
-      <div className={`border-b px-4 py-3 transition-colors duration-300 ${
+      {/* Left Sidebar Navigation */}
+      <div className={`w-20 flex flex-col items-center py-4 transition-colors duration-300 ${
         appearance.theme === 'light'
-          ? 'bg-white border-gray-200'
-          : 'bg-gray-900 border-gray-700'
+          ? 'bg-white border-r border-gray-200'
+          : 'bg-gray-900 border-r border-gray-700'
       }`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">G</span>
+        {/* Logo */}
+        <div className="mb-8">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-lg">G</span>
+          </div>
+        </div>
+
+        {/* Course Categories */}
+        <div className="flex flex-col items-center space-y-4 mb-8">
+          {courses.map((course) => (
+            <div key={course.id} className="relative group">
+              <button
+                onClick={() => {
+                  setSelectedCourse(course.id);
+                  setSelectedChannel('general');
+                  setShowDMs(false);
+                }}
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110 ${
+                  selectedCourse === course.id 
+                    ? `bg-gradient-to-r ${course.color} text-white shadow-lg` 
+                    : appearance.theme === 'light'
+                    ? 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                }`}
+              >
+                {course.icon}
+              </button>
+              {/* Tooltip */}
+              <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                {course.name}
+                <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
               </div>
-              <span className={`font-bold text-lg transition-colors duration-300 ${
-                appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
-              }`}>Guidix Campus</span>
             </div>
-            
-            {/* Course Tabs */}
-            <div className="flex items-center space-x-2">
-              {courses.map((course) => (
-                <button
-                  key={course.id}
-                  onClick={() => {
-                    setSelectedCourse(course.id);
-                    setSelectedChannel('general');
-                    setShowDMs(false);
-                  }}
-                  className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 ${
-                    selectedCourse === course.id 
-                      ? `bg-gradient-to-r ${course.color} text-white shadow-lg` 
-                      : appearance.theme === 'light'
-                      ? 'bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-gray-900'
-                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
-                  }`}
-                >
-                  <span className="text-lg">{course.icon}</span>
-                  <span className={`font-medium ${appearance.fontSize === 'small' ? 'text-xs' : appearance.fontSize === 'large' ? 'text-base' : 'text-sm'}`}>{course.name}</span>
-                </button>
-              ))}
-              
-              <button
-                onClick={() => setShowDMs(!showDMs)}
-                className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 ${
-                  showDMs 
-                    ? 'bg-green-500 text-white shadow-lg' 
-                    : appearance.theme === 'light'
-                    ? 'bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-gray-900'
-                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
-                }`}
-              >
-                <MessageCircle size={16} />
-                <span className={`font-medium ${appearance.fontSize === 'small' ? 'text-xs' : appearance.fontSize === 'large' ? 'text-base' : 'text-sm'}`}>Direct Messages</span>
-              </button>
-              
-              <button
-                onClick={() => setShowCourseSidebar(!showCourseSidebar)}
-                className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 ${
-                  showCourseSidebar 
-                    ? 'bg-blue-500 text-white shadow-lg' 
-                    : appearance.theme === 'light'
-                    ? 'bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-gray-900'
-                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white'
-                }`}
-              >
-                <span className="text-lg">📖</span>
-                <span className={`font-medium ${appearance.fontSize === 'small' ? 'text-xs' : appearance.fontSize === 'large' ? 'text-base' : 'text-sm'}`}>Course Categories</span>
-              </button>
+          ))}
+        </div>
+
+        {/* Direct Messages */}
+        <div className="relative group mb-8">
+          <button
+            onClick={() => setShowDMs(!showDMs)}
+            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+              showDMs 
+                ? 'bg-green-500 text-white shadow-lg' 
+                : appearance.theme === 'light'
+                ? 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+            }`}
+          >
+            <MessageCircle size={20} />
+          </button>
+          {/* Tooltip */}
+          <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            Direct Messages
+            <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+          </div>
+        </div>
+
+        {/* Course Categories Button */}
+        <div className="relative group mb-8">
+          <button
+            onClick={() => setShowCourseSidebar(!showCourseSidebar)}
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110 ${
+              showCourseSidebar 
+                ? 'bg-blue-500 text-white shadow-lg' 
+                : appearance.theme === 'light'
+                ? 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+            }`}
+          >
+            📖
+          </button>
+          {/* Tooltip */}
+          <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            Course Categories
+            <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+          </div>
+        </div>
+
+        {/* Spacer */}
+        <div className="flex-1"></div>
+
+        {/* User Controls */}
+        <div className="flex flex-col items-center space-y-4">
+          <div className="relative group">
+            <button className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+              appearance.theme === 'light' 
+                ? 'bg-gray-200 hover:bg-gray-300 text-gray-700' 
+                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+            }`}>
+              <Bell size={20} />
+            </button>
+            {/* Tooltip */}
+            <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              Notifications
+              <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-3">
-            <button className={`p-2 transition-colors ${
+
+          <div className="relative group">
+            <button className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
               appearance.theme === 'light' 
-                ? 'text-gray-600 hover:text-gray-900' 
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-gray-200 hover:bg-gray-300 text-gray-700' 
+                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
             }`}>
-              <Bell size={18} />
+              <Search size={20} />
             </button>
-            <button className={`p-2 transition-colors ${
-              appearance.theme === 'light' 
-                ? 'text-gray-600 hover:text-gray-900' 
-                : 'text-gray-400 hover:text-white'
-            }`}>
-              <Search size={18} />
+            {/* Tooltip */}
+            <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              Search
+              <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+            </div>
+          </div>
+
+          <div className="relative group">
+            <button
+              onClick={() => setShowUserDropdown(!showUserDropdown)}
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                appearance.theme === 'light'
+                  ? 'bg-gray-200 hover:bg-gray-300'
+                  : 'bg-gray-700 hover:bg-gray-600'
+              }`}
+            >
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                <User className="text-white" size={16} />
+              </div>
             </button>
-            <div className="relative">
-              <button
-                onClick={() => setShowUserDropdown(!showUserDropdown)}
-                className={`flex items-center space-x-2 rounded-lg p-2 transition-colors ${
-                  appearance.theme === 'light'
-                    ? 'hover:bg-gray-200'
-                    : 'hover:bg-gray-700'
-                }`}
-              >
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                  <User className="text-white" size={16} />
-                </div>
-                <span className={`text-sm font-medium transition-colors duration-300 ${
-                  appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
-                }`}>Student User</span>
-              </button>
+            {/* Tooltip */}
+            <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              Profile
+              <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
             </div>
           </div>
         </div>
       </div>
 
-             {/* Main Content Area */}
-       <div className="flex-1 flex">
-         {/* Course Categories Sidebar */}
-         {showCourseSidebar && <CourseSidebar />}
-         
-         {/* Main Content */}
-         {showCourseSidebar ? (
-           <CourseCategoryView />
-         ) : (
-           <div className="flex-1 flex">
-             {/* Chat Area */}
-             <div className={`flex-1 flex flex-col transition-colors duration-300 ${
-               appearance.theme === 'light' ? 'bg-gray-200' : 'bg-gray-600'
-             }`}>
-               {/* Chat Header */}
-               <div className={`p-4 border-b transition-colors duration-300 ${
-                 appearance.theme === 'light' 
-                   ? 'border-gray-300 bg-white' 
-                   : 'border-gray-500 bg-gray-700'
-               }`}>
-                 <div className="flex items-center justify-between">
-                   <div className="flex items-center">
-                     {showDMs ? (
-                       <MessageCircle className={`mr-2 transition-colors duration-300 ${
-                         appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                       }`} size={20} />
-                     ) : (
-                       <Hash className={`mr-2 transition-colors duration-300 ${
-                         appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                       }`} size={20} />
-                     )}
-                     <h3 className={`font-semibold transition-colors duration-300 ${
-                       appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
-                     }`}>
-                       {showDMs ? 'Direct Messages' : currentChannel?.name}
-                     </h3>
-                     {!showDMs && (
-                       <div className={`ml-4 text-sm transition-colors duration-300 ${
-                         appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
-                       }`}>
-                         Course discussion and help
-                       </div>
-                     )}
-                   </div>
-                   <div className="flex items-center space-x-2">
-                     <button className="p-2 text-gray-400 hover:text-white transition-colors">
-                       <Phone size={18} />
-                     </button>
-                     <button className="p-2 text-gray-400 hover:text-white transition-colors">
-                       <Video size={18} />
-                     </button>
-                     <button className="p-2 text-gray-400 hover:text-white transition-colors">
-                       <Bell size={18} />
-                     </button>
-                     <button className="p-2 text-gray-400 hover:text-white transition-colors">
-                       <Users size={18} />
-                     </button>
-                     <button className="p-2 text-gray-400 hover:text-white transition-colors">
-                       <Search size={18} />
-                     </button>
-                   </div>
-                 </div>
-               </div>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Header with current course info */}
+        <div className={`border-b px-6 py-4 transition-colors duration-300 ${
+          appearance.theme === 'light'
+            ? 'bg-white border-gray-200'
+            : 'bg-gray-900 border-gray-700'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-2xl bg-gradient-to-r ${
+                currentCourse?.color || 'from-gray-400 to-gray-600'
+              }`}>
+                {currentCourse?.icon || '📚'}
+              </div>
+              <div>
+                <h1 className={`text-xl font-bold transition-colors duration-300 ${
+                  appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
+                }`}>
+                  {showDMs ? 'Direct Messages' : currentCourse?.name || 'Guidix Campus'}
+                </h1>
+                <p className={`text-sm transition-colors duration-300 ${
+                  appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+                }`}>
+                  {showDMs ? 'Connect with your friends' : 'Learning and collaboration space'}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <span className={`text-sm font-medium transition-colors duration-300 ${
+                appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+              }`}>
+                Student User
+              </span>
+            </div>
+          </div>
+        </div>
 
-               {/* Messages */}
-               <div className={`flex-1 overflow-y-auto p-4 ${
-                 appearance.compactMode ? 'space-y-1' : 'space-y-4'
-               }`}>
-                 {!showDMs && messages.map((message) => (
-                   <div key={message.id} className={`flex items-start space-x-3 p-2 rounded transition-colors ${
-                     appearance.theme === 'light' 
-                       ? 'hover:bg-gray-100' 
-                       : 'hover:bg-gray-700 hover:bg-opacity-30'
-                   } ${appearance.compactMode ? 'py-1' : 'py-2'}`}>
-                     <img
-                       src={message.avatar}
-                       alt={message.user}
-                       className={`rounded-full ${
-                         appearance.compactMode ? 'w-8 h-8' : 'w-10 h-10'
-                       }`}
-                     />
-                     <div className="flex-1">
-                       <div className={`flex items-center space-x-2 ${appearance.compactMode ? 'mb-0' : 'mb-1'}`}>
-                         <span className={`font-semibold ${
-                           message.role === 'instructor' ? 'text-yellow-400' : appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
-                         }`}>
-                           {message.user}
-                         </span>
-                         {message.role === 'instructor' && (
-                           <span className="bg-yellow-500 text-black text-xs px-2 py-0.5 rounded font-bold">
-                             INSTRUCTOR
-                           </span>
-                         )}
-                         {appearance.showTimestamps && (
-                           <span className={`text-xs transition-colors duration-300 ${
-                             appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
-                           }`}>{message.time}</span>
-                         )}
-                       </div>
-                       <div className={`leading-relaxed transition-colors duration-300 ${
-                         appearance.theme === 'light' ? 'text-gray-800' : 'text-gray-300'
-                       }`}>
-                         {message.content}
-                       </div>
-                     </div>
-                   </div>
-                 ))}
-                 
-                 {showDMs && (
-                   <div className={`text-center py-8 transition-colors duration-300 ${
-                     appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
-                   }`}>
-                     <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
-                     <p>Select a conversation to start messaging</p>
-                   </div>
-                 )}
-               </div>
+        {/* Main Content */}
+        <div className="flex-1 flex">
+          {/* Course Categories Sidebar */}
+          {showCourseSidebar && <CourseSidebar />}
+          
+          {/* Main Content */}
+          {showCourseSidebar ? (
+            <CourseCategoryView />
+          ) : (
+            <div className="flex-1 flex">
+              {/* Chat Area */}
+              <div className={`flex-1 flex flex-col transition-colors duration-300 ${
+                appearance.theme === 'light' ? 'bg-gray-200' : 'bg-gray-600'
+              }`}>
+                {/* Chat Header */}
+                <div className={`p-4 border-b transition-colors duration-300 ${
+                  appearance.theme === 'light' 
+                    ? 'border-gray-300 bg-white' 
+                    : 'border-gray-500 bg-gray-700'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      {showDMs ? (
+                        <MessageCircle className={`mr-2 transition-colors duration-300 ${
+                          appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                        }`} size={20} />
+                      ) : (
+                        <Hash className={`mr-2 transition-colors duration-300 ${
+                          appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                        }`} size={20} />
+                      )}
+                      <h3 className={`font-semibold transition-colors duration-300 ${
+                        appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
+                      }`}>
+                        {showDMs ? 'Direct Messages' : currentChannel?.name}
+                      </h3>
+                      {!showDMs && (
+                        <div className={`ml-4 text-sm transition-colors duration-300 ${
+                          appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                        }`}>
+                          Course discussion and help
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                        <Phone size={18} />
+                      </button>
+                      <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                        <Video size={18} />
+                      </button>
+                      <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                        <Bell size={18} />
+                      </button>
+                      <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                        <Users size={18} />
+                      </button>
+                      <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                        <Search size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-               {/* Message Input */}
-               <div className={`p-4 transition-colors duration-300 ${
-                 appearance.theme === 'light' ? 'bg-white' : 'bg-gray-700'
-               }`}>
-                 <div className={`flex items-center rounded-lg px-4 py-3 transition-colors duration-300 ${
-                   appearance.theme === 'light' ? 'bg-gray-100' : 'bg-gray-600'
-                 }`}>
-                   <button className={`mr-3 transition-colors ${
-                     appearance.theme === 'light' 
-                       ? 'text-gray-600 hover:text-gray-900' 
-                       : 'text-gray-400 hover:text-white'
-                   }`}>
-                     <Plus size={20} />
-                   </button>
-                   <input
-                     type="text"
-                     value={messageInput}
-                     onChange={(e) => setMessageInput(e.target.value)}
-                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                     placeholder={`Message ${showDMs ? 'Direct Messages' : `#${currentChannel?.name}`}`}
-                     className={`flex-1 bg-transparent outline-none transition-colors duration-300 ${
-                       appearance.theme === 'light' 
-                         ? 'text-gray-900 placeholder-gray-500' 
-                         : 'text-white placeholder-gray-400'
-                     }`}
-                   />
-                   <div className="flex items-center space-x-2 ml-3">
-                     <button className={`transition-colors ${
-                       appearance.theme === 'light' 
-                         ? 'text-gray-600 hover:text-gray-900' 
-                         : 'text-gray-400 hover:text-white'
-                     }`}>
-                       <Gift size={20} />
-                     </button>
-                     <button className={`transition-colors ${
-                       appearance.theme === 'light' 
-                         ? 'text-gray-600 hover:text-gray-900' 
-                         : 'text-gray-400 hover:text-white'
-                     }`}>
-                       <Paperclip size={20} />
-                     </button>
-                     <button className={`transition-colors ${
-                       appearance.theme === 'light' 
-                         ? 'text-gray-600 hover:text-gray-900' 
-                         : 'text-gray-400 hover:text-white'
-                     }`}>
-                       <Smile size={20} />
-                     </button>
-                     <button
-                       onClick={handleSendMessage}
-                       className={`transition-colors ${
-                         appearance.theme === 'light' 
-                           ? 'text-gray-600 hover:text-gray-900' 
-                           : 'text-gray-400 hover:text-white'
-                       }`}
-                     >
-                       <Send size={20} />
-                     </button>
-                   </div>
-                 </div>
-               </div>
-             </div>
+                {/* Messages */}
+                <div className={`flex-1 overflow-y-auto p-4 ${
+                  appearance.compactMode ? 'space-y-1' : 'space-y-4'
+                }`}>
+                  {!showDMs && messages.map((message) => (
+                    <div key={message.id} className={`flex items-start space-x-3 p-2 rounded transition-colors ${
+                      appearance.theme === 'light' 
+                        ? 'hover:bg-gray-100' 
+                        : 'hover:bg-gray-700 hover:bg-opacity-30'
+                    } ${appearance.compactMode ? 'py-1' : 'py-2'}`}>
+                      <img
+                        src={message.avatar}
+                        alt={message.user}
+                        className={`rounded-full ${
+                          appearance.compactMode ? 'w-8 h-8' : 'w-10 h-10'
+                        }`}
+                      />
+                      <div className="flex-1">
+                        <div className={`flex items-center space-x-2 ${appearance.compactMode ? 'mb-0' : 'mb-1'}`}>
+                          <span className={`font-semibold ${
+                            message.role === 'instructor' ? 'text-yellow-400' : appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
+                          }`}>
+                            {message.user}
+                          </span>
+                          {message.role === 'instructor' && (
+                            <span className="bg-yellow-500 text-black text-xs px-2 py-0.5 rounded font-bold">
+                              INSTRUCTOR
+                            </span>
+                          )}
+                          {appearance.showTimestamps && (
+                            <span className={`text-xs transition-colors duration-300 ${
+                              appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                            }`}>{message.time}</span>
+                          )}
+                        </div>
+                        <div className={`leading-relaxed transition-colors duration-300 ${
+                          appearance.theme === 'light' ? 'text-gray-800' : 'text-gray-300'
+                        }`}>
+                          {message.content}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {showDMs && (
+                    <div className={`text-center py-8 transition-colors duration-300 ${
+                      appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                    }`}>
+                      <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
+                      <p>Select a conversation to start messaging</p>
+                    </div>
+                  )}
+                </div>
 
-             {/* Members List */}
-             <div className={`w-60 border-l transition-colors duration-300 ${
-               appearance.theme === 'light' 
-                 ? 'bg-gray-50 border-gray-200' 
-                 : 'bg-gray-700 border-gray-600'
-             }`}>
-               <div className="p-4">
-                 <h3 className={`font-semibold mb-4 transition-colors duration-300 ${
-                   appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
-                 }`}>
-                   {showDMs ? 'Friends' : `${currentCourse?.name} Members`}
-                 </h3>
-                 
-                 <div className="space-y-4">
-                   <div>
-                     <div className={`text-xs font-semibold mb-2 transition-colors duration-300 ${
-                       appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
-                     }`}>INSTRUCTORS — 1</div>
-                     <div 
-                       onClick={() => handleProfileClick('Sarah Johnson')}
-                       className={`flex items-center space-x-2 p-2 rounded cursor-pointer transition-colors ${
-                         appearance.theme === 'light' ? 'hover:bg-gray-200' : 'hover:bg-gray-600'
-                       }`}
-                     >
-                       <div className="relative">
-                         <img
-                           src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100"
-                           alt="Sarah Johnson"
-                           className="w-8 h-8 rounded-full hover:ring-2 hover:ring-yellow-400 transition-all"
-                         />
-                         <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-gray-700"></div>
-                       </div>
-                       <span className="text-yellow-400 text-sm font-medium">Sarah Johnson</span>
-                     </div>
-                   </div>
+                {/* Message Input */}
+                <div className={`p-4 transition-colors duration-300 ${
+                  appearance.theme === 'light' ? 'bg-white' : 'bg-gray-700'
+                }`}>
+                  <div className={`flex items-center rounded-lg px-4 py-3 transition-colors duration-300 ${
+                    appearance.theme === 'light' ? 'bg-gray-100' : 'bg-gray-600'
+                  }`}>
+                    <button className={`mr-3 transition-colors ${
+                      appearance.theme === 'light' 
+                        ? 'text-gray-600 hover:text-gray-900' 
+                        : 'text-gray-400 hover:text-white'
+                    }`}>
+                      <Plus size={20} />
+                    </button>
+                    <input
+                      type="text"
+                      value={messageInput}
+                      onChange={(e) => setMessageInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                      placeholder={`Message ${showDMs ? 'Direct Messages' : `#${currentChannel?.name}`}`}
+                      className={`flex-1 bg-transparent outline-none transition-colors duration-300 ${
+                        appearance.theme === 'light' 
+                          ? 'text-gray-900 placeholder-gray-500' 
+                          : 'text-white placeholder-gray-400'
+                      }`}
+                    />
+                    <div className="flex items-center space-x-2 ml-3">
+                      <button className={`transition-colors ${
+                        appearance.theme === 'light' 
+                          ? 'text-gray-600 hover:text-gray-900' 
+                          : 'text-gray-400 hover:text-white'
+                      }`}>
+                        <Gift size={20} />
+                      </button>
+                      <button className={`transition-colors ${
+                        appearance.theme === 'light' 
+                          ? 'text-gray-600 hover:text-gray-900' 
+                          : 'text-gray-400 hover:text-white'
+                      }`}>
+                        <Paperclip size={20} />
+                      </button>
+                      <button className={`transition-colors ${
+                        appearance.theme === 'light' 
+                          ? 'text-gray-600 hover:text-gray-900' 
+                          : 'text-gray-400 hover:text-white'
+                      }`}>
+                        <Smile size={20} />
+                      </button>
+                      <button
+                        onClick={handleSendMessage}
+                        className={`transition-colors ${
+                          appearance.theme === 'light' 
+                            ? 'text-gray-600 hover:text-gray-900' 
+                            : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        <Send size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                   <div>
-                     <div className={`text-xs font-semibold mb-2 transition-colors duration-300 ${
-                       appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
-                     }`}>STUDENTS — 24</div>
-                     <div className="space-y-1">
-                       {[
-                         { name: 'Mike Student', status: 'online' },
-                         { name: 'Lisa Park', status: 'online' },
-                         { name: 'David Wilson', status: 'away' },
-                         { name: 'Emma Chen', status: 'online' },
-                         { name: 'Alex Rodriguez', status: 'offline' }
-                       ].map((student, index) => (
-                         <div 
-                           key={index} 
-                           onClick={() => handleProfileClick(student.name)}
-                           className={`flex items-center space-x-2 p-2 rounded cursor-pointer transition-colors ${
-                             appearance.theme === 'light' ? 'hover:bg-gray-200' : 'hover:bg-gray-600'
-                           }`}
-                         >
-                           <div className="relative">
-                             <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                               <span className="text-white text-xs font-bold">
-                                 {student.name.split(' ').map(n => n[0]).join('')}
-                               </span>
-                             </div>
-                             <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-gray-700 ${
-                               student.status === 'online' ? 'bg-green-400' : 
-                               student.status === 'away' ? 'bg-yellow-400' : 'bg-gray-400'
-                             }`}></div>
-                           </div>
-                           <span className={`text-sm transition-colors duration-300 ${
-                             appearance.theme === 'light' ? 'text-gray-700' : 'text-gray-300'
-                           }`}>{student.name}</span>
-                         </div>
-                       ))}
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
-         )}
-    </div>
+              {/* Members List */}
+              <div className={`w-60 border-l transition-colors duration-300 ${
+                appearance.theme === 'light' 
+                  ? 'bg-gray-50 border-gray-200' 
+                  : 'bg-gray-700 border-gray-600'
+              }`}>
+                <div className="p-4">
+                  <h3 className={`font-semibold mb-4 transition-colors duration-300 ${
+                    appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
+                  }`}>
+                    {showDMs ? 'Friends' : `${currentCourse?.name} Members`}
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <div className={`text-xs font-semibold mb-2 transition-colors duration-300 ${
+                        appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                      }`}>INSTRUCTORS — 1</div>
+                      <div 
+                        onClick={() => handleProfileClick('Sarah Johnson')}
+                        className={`flex items-center space-x-2 p-2 rounded cursor-pointer transition-colors ${
+                          appearance.theme === 'light' ? 'hover:bg-gray-200' : 'hover:bg-gray-600'
+                        }`}
+                      >
+                        <div className="relative">
+                          <img
+                            src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100"
+                            alt="Sarah Johnson"
+                            className="w-8 h-8 rounded-full hover:ring-2 hover:ring-yellow-400 transition-all"
+                          />
+                          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-gray-700"></div>
+                        </div>
+                        <span className="text-yellow-400 text-sm font-medium">Sarah Johnson</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className={`text-xs font-semibold mb-2 transition-colors duration-300 ${
+                        appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                      }`}>STUDENTS — 24</div>
+                      <div className="space-y-1">
+                        {[
+                          { name: 'Mike Student', status: 'online' },
+                          { name: 'Lisa Park', status: 'online' },
+                          { name: 'David Wilson', status: 'away' },
+                          { name: 'Emma Chen', status: 'online' },
+                          { name: 'Alex Rodriguez', status: 'offline' }
+                        ].map((student, index) => (
+                          <div 
+                            key={index} 
+                            onClick={() => handleProfileClick(student.name)}
+                            className={`flex items-center space-x-2 p-2 rounded cursor-pointer transition-colors ${
+                              appearance.theme === 'light' ? 'hover:bg-gray-200' : 'hover:bg-gray-600'
+                            }`}
+                          >
+                            <div className="relative">
+                              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">
+                                  {student.name.split(' ').map(n => n[0]).join('')}
+                                </span>
+                              </div>
+                              <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-gray-700 ${
+                                student.status === 'online' ? 'bg-green-400' : 
+                                student.status === 'away' ? 'bg-yellow-400' : 'bg-gray-400'
+                              }`}></div>
+                            </div>
+                            <span className={`text-sm transition-colors duration-300 ${
+                              appearance.theme === 'light' ? 'text-gray-700' : 'text-gray-300'
+                            }`}>{student.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     
     {/* Profile Modal */}
       {selectedProfile && (
