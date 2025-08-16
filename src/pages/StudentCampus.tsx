@@ -2051,42 +2051,13 @@ export default function StudentCampus() {
           : 'bg-gray-900 border-r border-gray-700'
       }`}>
         {/* Logo */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-lg">G</span>
           </div>
         </div>
 
-        {/* Course Categories */}
-        <div className="flex flex-col items-center space-y-4 mb-8">
-          {courses.map((course) => (
-            <div key={course.id} className="relative group">
-              <button
-                onClick={() => {
-                  setSelectedCourse(course.id);
-                  setSelectedChannel('general');
-                  setShowDMs(false);
-                }}
-                className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110 ${
-                  selectedCourse === course.id 
-                    ? `bg-gradient-to-r ${course.color} text-white shadow-lg` 
-                    : appearance.theme === 'light'
-                    ? 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-                }`}
-              >
-                {course.icon}
-              </button>
-              {/* Tooltip */}
-              <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                {course.name}
-                <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Direct Messages */}
+        {/* Direct Messages - Moved under logo */}
         <div className="relative group mb-8">
           <button
             onClick={() => setShowDMs(!showDMs)}
@@ -2105,6 +2076,36 @@ export default function StudentCampus() {
             Direct Messages
             <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
           </div>
+        </div>
+
+        {/* Course Categories - Better spacing */}
+        <div className="flex flex-col items-center space-y-6 mb-8">
+          {courses.map((course) => (
+            <div key={course.id} className="relative group">
+              <button
+                onClick={() => {
+                  setSelectedCourse(course.id);
+                  setSelectedChannel('general');
+                  setShowDMs(false);
+                  setShowCourseSidebar(false); // Close course sidebar when selecting a course
+                }}
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110 ${
+                  selectedCourse === course.id 
+                    ? `bg-gradient-to-r ${course.color} text-white shadow-lg` 
+                    : appearance.theme === 'light'
+                    ? 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                }`}
+              >
+                {course.icon}
+              </button>
+              {/* Tooltip */}
+              <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                {course.name}
+                <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Course Categories Button */}
@@ -2132,7 +2133,7 @@ export default function StudentCampus() {
         <div className="flex-1"></div>
 
         {/* User Controls */}
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 mb-4">
           <div className="relative group">
             <button className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
               appearance.theme === 'light' 
@@ -2183,6 +2184,25 @@ export default function StudentCampus() {
             </div>
           </div>
         </div>
+
+        {/* Settings Gear - Added at bottom */}
+        <div className="relative group">
+          <button
+            onClick={() => setShowSettings(true)}
+            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+              appearance.theme === 'light' 
+                ? 'bg-gray-200 hover:bg-gray-300 text-gray-700' 
+                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+            }`}
+          >
+            <Settings size={20} />
+          </button>
+          {/* Tooltip */}
+          <div className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            Settings
+            <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-900 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+          </div>
+        </div>
       </div>
 
       {/* Main Content Area */}
@@ -2228,6 +2248,126 @@ export default function StudentCampus() {
         <div className="flex-1 flex">
           {/* Course Categories Sidebar */}
           {showCourseSidebar && <CourseSidebar />}
+          
+          {/* Channels Sidebar - Shows when in a course category */}
+          {!showCourseSidebar && !showDMs && currentCourse && (
+            <div className={`w-64 flex flex-col transition-colors duration-300 ${
+              appearance.theme === 'light' ? 'bg-gray-50 border-r border-gray-200' : 'bg-gray-800 border-r border-gray-700'
+            }`}>
+              {/* Header */}
+              <div className={`p-4 border-b transition-colors duration-300 ${
+                appearance.theme === 'light' ? 'border-gray-200' : 'border-gray-700'
+              }`}>
+                <div className="flex items-center space-x-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-gradient-to-r ${currentCourse.color}`}>
+                    {currentCourse.icon}
+                  </div>
+                  <div>
+                    <h3 className={`font-bold transition-colors duration-300 ${
+                      appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
+                    }`}>
+                      {currentCourse.name}
+                    </h3>
+                    <p className={`text-sm transition-colors duration-300 ${
+                      appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      Chat Channels
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Channels List */}
+              <div className="flex-1 overflow-y-auto p-2">
+                <div className="mb-4">
+                  <div className={`flex items-center px-2 py-1 mb-2 ${
+                    appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+                  }`}>
+                    <span className="text-sm font-semibold">TEXT CHANNELS</span>
+                  </div>
+                  {currentCourse.channels.filter(channel => channel.type === 'text').map((channel) => (
+                    <button
+                      key={channel.id}
+                      onClick={() => setSelectedChannel(channel.id)}
+                      className={`w-full flex items-center px-2 py-2 rounded text-left transition-colors ${
+                        selectedChannel === channel.id 
+                          ? appearance.theme === 'light'
+                            ? 'bg-blue-100 text-blue-900'
+                            : 'bg-gray-600 text-white'
+                          : appearance.theme === 'light'
+                            ? 'text-gray-700 hover:bg-gray-200'
+                            : 'text-gray-300 hover:bg-gray-600 hover:text-white'
+                      }`}
+                    >
+                      <Hash size={16} className="mr-2" />
+                      <span className="text-sm">{channel.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div>
+                  <div className={`flex items-center px-2 py-1 mb-2 ${
+                    appearance.theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+                  }`}>
+                    <span className="text-sm font-semibold">VOICE CHANNELS</span>
+                  </div>
+                  {currentCourse.channels.filter(channel => channel.type === 'voice').map((channel) => (
+                    <button
+                      key={channel.id}
+                      onClick={() => handleChannelClick(channel)}
+                      className={`w-full flex items-center px-2 py-2 rounded text-left transition-colors ${
+                        appearance.theme === 'light'
+                          ? 'text-gray-700 hover:bg-gray-200'
+                          : 'text-gray-300 hover:bg-gray-600 hover:text-white'
+                      }`}
+                    >
+                      <Users size={16} className="mr-2" />
+                      <span className="text-sm">{channel.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* User Panel */}
+              <div className={`p-2 border-t transition-colors duration-300 ${
+                appearance.theme === 'light' 
+                  ? 'bg-gray-100 border-gray-200' 
+                  : 'bg-gray-800 border-gray-600'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-2">
+                      <User className="text-white" size={16} />
+                    </div>
+                    <div>
+                      <div className={`text-sm font-medium transition-colors duration-300 ${
+                        appearance.theme === 'light' ? 'text-gray-900' : 'text-white'
+                      }`}>Student User</div>
+                      <div className={`text-xs transition-colors duration-300 ${
+                        appearance.theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                      }`}>#1234</div>
+                    </div>
+                  </div>
+                  <div className="flex space-x-1">
+                    <button className={`p-1 transition-colors ${
+                      appearance.theme === 'light' 
+                        ? 'text-gray-600 hover:text-gray-900' 
+                        : 'text-gray-400 hover:text-white'
+                    }`}>
+                      <Mic size={16} />
+                    </button>
+                    <button className={`p-1 transition-colors ${
+                      appearance.theme === 'light' 
+                        ? 'text-gray-600 hover:text-gray-900' 
+                        : 'text-gray-400 hover:text-white'
+                    }`}>
+                      <Headphones size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Main Content */}
           {showCourseSidebar ? (
